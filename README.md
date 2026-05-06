@@ -4,7 +4,7 @@
 
 Robust Video Transcribe is an agent-friendly video-to-Markdown toolkit. Give this repository URL to your coding agent, and the agent can install it, run the CLI, transcribe long videos with keyframes, and optionally generate a polished reading version.
 
-It is not tied to Codex. The core is `scripts/video_transcribe.py`, a normal Python CLI that any agent can call. The `skills/` directory only contains optional Codex adapters.
+The main entry point is `scripts/video_transcribe.py`. Optional helper files for agent integrations live under `skills/`.
 
 ## Examples
 
@@ -24,11 +24,11 @@ Lecture and screen-recording videos keep important slides or screen frames in th
 
 `robust-video-transcribe` 是一个面向 agent 的视频转写工具包。它把视频 URL 或本地视频文件转成带关键帧图片的 Markdown 笔记，适合访谈、讲座、课程录播、技术教程、屏幕演示等长视频。
 
-核心能力在普通 Python 脚本里，不依赖某个特定 agent 平台：
+核心入口是普通 Python 脚本：
 
-- `scripts/video_transcribe.py`：通用视频转写 CLI，所有 agent 都可以直接运行。
+- `scripts/video_transcribe.py`：通用视频转写 CLI。
 - `scripts/elrc_course_crawler.py`：可选的上海科技大学 ELRC 课程录播爬取器，会调用同一个转写 CLI。
-- `skills/`：可选的 Codex skill 适配层；不用 Codex 的 agent 可以忽略。
+- `skills/`：可选的 agent 集成辅助文件。
 
 ### 给 Agent 的安装指令
 
@@ -141,11 +141,11 @@ ELRC 是校园网资源，脚本默认让 ELRC 请求绕过代理；模型 API �
 
 `robust-video-transcribe` is an agent-friendly video transcription toolkit. It converts a video URL or local video file into Markdown notes with selected keyframes. It is designed for interviews, talks, lectures, course recordings, tutorials, and screen recordings.
 
-The core is a normal Python CLI, not a platform-specific skill:
+The main entry point is a normal Python CLI:
 
-- `scripts/video_transcribe.py`: the general video transcription CLI, usable by any agent.
+- `scripts/video_transcribe.py`: the general video transcription CLI.
 - `scripts/elrc_course_crawler.py`: optional ShanghaiTech ELRC course crawler that delegates to the same transcription CLI.
-- `skills/`: optional Codex adapters. Non-Codex agents can ignore this directory.
+- `skills/`: optional helper files for agent integrations.
 
 ### Installation Prompt For Agents
 
@@ -250,4 +250,3 @@ The ELRC crawler:
 - Cleans source videos and temporary files after success.
 
 ELRC is a campus resource, so ELRC requests bypass proxy by default. Model API requests still use the current terminal or system network route.
-
