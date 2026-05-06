@@ -1,0 +1,15 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.env
+*.mp4
+*.mp4.part
+*.m4a
+*.mp3
+*.wav
+*_work/
+elrc_work/
+transcribe_output/
+output/
+cookies*.txt
+*cookies*.txt
