@@ -1,17 +1,25 @@
-# Shanghaitech ELRC Skills
+# Video Transcribe Skills
 
-Codex skills and scripts for ShanghaiTech ELRC course recordings.
+Codex skills and scripts for turning videos into readable Markdown notes with selected keyframes.
 
-## What Is Included
+The core project is `video-transcribe`: it accepts a video URL or local video file, extracts audio and keyframes, automatically chunks long videos, transcribes with a multimodal model, and optionally produces a refined reading version.
 
-- `skills/elrc-course-crawler`: crawl ELRC course recordings, select the screen-view video, transcribe, and save Markdown notes.
-- `skills/video-transcribe`: transcribe a video file or URL into Markdown with selected keyframes.
-- `scripts/elrc_course_crawler.py`: command-line crawler and batch runner.
-- `scripts/video_transcribe.py`: command-line transcription script with automatic long-video chunking.
+`elrc-course-crawler` is an optional companion skill for ShanghaiTech ELRC course recordings. It crawls course pages, downloads the screen-view recording, and then calls the same `video-transcribe` script.
 
-See `INSTALL.md` for setup and usage.
+## Included
+
+- `skills/video-transcribe`: the main Codex skill for general video transcription.
+- `scripts/video_transcribe.py`: the main transcription script.
+- `skills/elrc-course-crawler`: optional ShanghaiTech ELRC crawler skill.
+- `scripts/elrc_course_crawler.py`: optional ELRC crawler and batch runner.
+
+## Documentation
+
+- `INSTALL.md`: install and command-line usage.
+- `docs/video-transcribe.md`: details for the core transcription skill.
+- `docs/elrc-course-crawler.md`: details for the optional ELRC crawler.
 
 ## Privacy
 
-The package does not include API keys, browser cookies, private paths, or course content. Configure your own `OPENROUTER_API_KEY`, `COURSE_VAULT_DIR`, and browser cookie source locally.
+This repository does not include API keys, browser cookies, private paths, source videos, generated transcripts, or course content. Configure credentials and output folders locally.
 
