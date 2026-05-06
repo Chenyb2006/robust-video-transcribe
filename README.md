@@ -1,23 +1,54 @@
-# Video Transcribe Skills
+# Robust Video Transcribe
 
-Codex skills and scripts for turning videos into readable Markdown notes with selected keyframes.
+Robust video-to-Markdown transcription for agents and humans.
 
-The core project is `video-transcribe`: it accepts a video URL or local video file, extracts audio and keyframes, automatically chunks long videos, transcribes with a multimodal model, and optionally produces a refined reading version.
+The core is a plain Python CLI, so any coding agent can run it directly without depending on Codex-specific skill support. It accepts a local video file or a URL supported by `yt-dlp`, extracts audio and keyframes, chunks long videos automatically, transcribes with a multimodal model, and optionally produces a refined reading version.
 
-`elrc-course-crawler` is an optional companion skill for ShanghaiTech ELRC course recordings. It crawls course pages, downloads the screen-view recording, and then calls the same `video-transcribe` script.
+An optional ShanghaiTech ELRC crawler is included. It discovers course recordings, downloads the screen-view MP4, and then calls the same generic transcription CLI.
 
-## Included
+## What's Included
 
-- `skills/video-transcribe`: the main Codex skill for general video transcription.
-- `scripts/video_transcribe.py`: the main transcription script.
-- `skills/elrc-course-crawler`: optional ShanghaiTech ELRC crawler skill.
-- `scripts/elrc_course_crawler.py`: optional ELRC crawler and batch runner.
+- `scripts/video_transcribe.py`: core video transcription CLI.
+- `scripts/elrc_course_crawler.py`: optional ShanghaiTech ELRC crawler.
+- `skills/video-transcribe`: optional Codex skill adapter for the core CLI.
+- `skills/elrc-course-crawler`: optional Codex skill adapter for the ELRC crawler.
+- `docs/video-transcribe.md`: core CLI details.
+- `docs/elrc-course-crawler.md`: ELRC crawler details.
 
-## Documentation
+## Quick Start
 
-- `INSTALL.md`: install and command-line usage.
-- `docs/video-transcribe.md`: details for the core transcription skill.
-- `docs/elrc-course-crawler.md`: details for the optional ELRC crawler.
+```bash
+python3 -m pip install -r requirements.txt
+brew install ffmpeg yt-dlp
+export OPENROUTER_API_KEY="your API key"
+
+python3 scripts/video_transcribe.py "/path/or/url/to/video.mp4" \
+  --api-key "$OPENROUTER_API_KEY" \
+  --save-dir ./transcribe_output \
+  --save-images
+```
+
+Add `--refine` to generate a cleaner reading version:
+
+```bash
+python3 scripts/video_transcribe.py "/path/or/url/to/video.mp4" \
+  --api-key "$OPENROUTER_API_KEY" \
+  --save-dir ./transcribe_output \
+  --save-images \
+  --refine
+```
+
+## Agent Usage
+
+For any agent, the default instruction is simple:
+
+1. Run `scripts/video_transcribe.py` for general video transcription.
+2. Use `--refine` only when the user wants a polished reading version.
+3. For long videos, rely on the built-in automatic chunking.
+4. Do not read the full generated transcript into the agent context; inspect only filenames, structure, and the first few lines for preamble cleanup.
+5. Keep API keys, cookies, videos, and transcripts out of git.
+
+Codex users can optionally copy the adapters under `skills/` into `~/.codex/skills`, but this is not required for the CLI.
 
 ## Privacy
 

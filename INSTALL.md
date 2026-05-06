@@ -1,39 +1,42 @@
 # Install
 
-This package contains one core video transcription skill and one optional ShanghaiTech ELRC crawler skill.
+Robust Video Transcribe is usable as a normal command-line toolkit. Agent-specific skill files are optional adapters.
 
-## 1. Install Dependencies
+## 1. Dependencies
+
+Python packages:
 
 ```bash
 python3 -m pip install -r requirements.txt
+```
+
+System tools:
+
+```bash
 brew install ffmpeg yt-dlp
 ```
 
-## 2. Install The Core Skill
+Linux users can install `ffmpeg` through their package manager and `yt-dlp` through pip or the distribution package manager.
 
-Install `video-transcribe` first. This is the main skill and can be used without ELRC.
-
-```bash
-mkdir -p ~/.codex/skills
-cp -R skills/video-transcribe ~/.codex/skills/
-```
-
-Recommended environment variables:
+## 2. Configure
 
 ```bash
 export OPENROUTER_API_KEY="your API key"
-export TRANSCRIBE_SCRIPT="$(pwd)/scripts/video_transcribe.py"
 export TRANSCRIBE_MODEL="google/gemini-3-flash-preview"
 export REFINE_MODEL="google/gemini-3-flash-preview"
 export TRANSCRIBE_SAVE_DIR="/path/to/notes"
 ```
+
+## 3. Core CLI Usage
 
 Transcribe one video:
 
 ```bash
 python3 scripts/video_transcribe.py "/path/or/url/to/video.mp4" \
   --api-key "$OPENROUTER_API_KEY" \
-  --save-dir "$TRANSCRIBE_SAVE_DIR" \
+  --model "${TRANSCRIBE_MODEL:-google/gemini-3-flash-preview}" \
+  --refine-model "${REFINE_MODEL:-google/gemini-3-flash-preview}" \
+  --save-dir "${TRANSCRIBE_SAVE_DIR:-./transcribe_output}" \
   --save-images
 ```
 
@@ -42,32 +45,30 @@ Generate an additional refined reading version:
 ```bash
 python3 scripts/video_transcribe.py "/path/or/url/to/video.mp4" \
   --api-key "$OPENROUTER_API_KEY" \
-  --save-dir "$TRANSCRIBE_SAVE_DIR" \
+  --save-dir "${TRANSCRIBE_SAVE_DIR:-./transcribe_output}" \
   --save-images \
   --refine
 ```
 
-`--refine` sends the full Markdown and referenced keyframes to the refine model, so it costs extra tokens. It is optional by design.
+Useful flags:
 
-## 3. Optional: Install The ELRC Crawler
+- `--chunk-trigger-min 30`: enable automatic chunking above this duration.
+- `--chunk-size-min 25`: long-video chunk size.
+- `--resolution 480`: lower URL video download resolution when visuals are not important.
+- `--fps 1`: frame extraction rate before automatic downsampling.
+- `--refine`: send Markdown and referenced keyframes to the refine model.
 
-Install this only if you need ShanghaiTech ELRC course recording crawling.
+`--refine` is optional because it costs extra model tokens.
 
-```bash
-cp -R skills/elrc-course-crawler ~/.codex/skills/
-```
+## 4. Optional ELRC Crawler
 
-Additional environment variables:
+Use this only for ShanghaiTech ELRC course recordings.
 
 ```bash
 export COURSE_VAULT_DIR="/path/to/Obsidian/课程"
 export ELRC_COOKIE_BROWSER="edge"
 export ELRC_COOKIE_FILE="/tmp/elrc_cookies.txt"
-```
 
-Crawl one ELRC course and transcribe all available screen-view recordings:
-
-```bash
 python3 scripts/elrc_course_crawler.py "https://elrc.shanghaitech.edu.cn/learn/videoreview/..." \
   --course-vault-dir "$COURSE_VAULT_DIR" \
   --api-key "$OPENROUTER_API_KEY"
@@ -82,27 +83,29 @@ python3 scripts/elrc_course_crawler.py "https://elrc.shanghaitech.edu.cn/learn/v
   --refine
 ```
 
-ELRC network notes:
+ELRC recovery flags:
 
-- ELRC course manifest and MP4 download requests bypass proxy by default.
-- Model API calls keep using your normal terminal/system network environment.
-- If ELRC returns `401` or `403`, log in through your browser and rerun with `--refresh-cookies`.
-- If the manifest API is unavailable but you have `manifest.json`, use `--manifest-file`.
-- If the download-address API is unstable, use `--prefer-direct`.
+- `--refresh-cookies`: force re-export browser cookies after login.
+- `--manifest-file manifest.json`: resume from a saved course manifest.
+- `--prefer-direct`: use the direct MP4 URL pattern before the download-address API.
+- `--max-items N`: process only the first N recordings for testing.
+- `--no-clean`: keep temporary videos and work files for debugging.
 
-Example recovery commands:
+ELRC requests bypass proxy by default; model API calls keep using your normal terminal/system network route.
+
+## 5. Optional Codex Skill Adapters
+
+If you use Codex and want automatic skill triggering, copy the adapters:
 
 ```bash
-python3 scripts/elrc_course_crawler.py "https://elrc.shanghaitech.edu.cn/learn/videoreview/..." \
-  --course-vault-dir "$COURSE_VAULT_DIR" \
-  --api-key "$OPENROUTER_API_KEY" \
-  --manifest-file ./manifest.json \
-  --prefer-direct
+mkdir -p ~/.codex/skills
+cp -R skills/video-transcribe ~/.codex/skills/
+cp -R skills/elrc-course-crawler ~/.codex/skills/
 ```
 
-## 4. Restart Codex
+Restart Codex or open a new session after copying.
 
-Restart Codex or open a new session after copying skills.
+Other agents can ignore `skills/` and call the scripts directly.
 
 ## Privacy
 

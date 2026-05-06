@@ -1,8 +1,6 @@
-# elrc-course-crawler
+# Optional ShanghaiTech ELRC Crawler
 
-Optional companion skill for ShanghaiTech ELRC course recordings.
-
-This skill is not the core project. It exists to automate course recording discovery and downloading, then delegates transcription to `video-transcribe`.
+`scripts/elrc_course_crawler.py` is an optional crawler for ShanghaiTech ELRC course recordings. It is not the core of the project. It automates course recording discovery and downloading, then delegates transcription to `scripts/video_transcribe.py`.
 
 ## What It Does
 

@@ -1,6 +1,6 @@
-# video-transcribe
+# Core Video Transcription CLI
 
-Core skill for converting videos into Markdown notes with selected keyframes.
+`scripts/video_transcribe.py` is the core of this repository. It is a normal Python command-line tool and can be used by any agent.
 
 ## Features
 
@@ -52,4 +52,8 @@ Each run creates a directory under `--save-dir` containing:
 - `<title>_精炼.md` when `--refine` is used
 
 The script only strips possible model greetings from the beginning of returned Markdown, and does not scan the whole transcript content.
+
+## Recommended Agent Contract
+
+Agents should treat generated transcripts as artifacts, not context. Inspect the output path, counts, and the first few lines only unless the user explicitly asks to analyze the transcript content.
 
