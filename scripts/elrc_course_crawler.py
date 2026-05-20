@@ -251,11 +251,18 @@ def count_final(course_dir):
     return len(full), len(refined)
 
 
+def final_exists(item, course_dir, need_refine):
+    final_dir = course_dir / item["title"]
+    final_md = final_dir / f"{item['title']}_转写.md"
+    refined_md = final_dir / f"{item['title']}_精炼.md"
+    return final_md.exists() and (not need_refine or refined_md.exists())
+
+
 def transcribe_one(item, video_path, course_dir, work_root, args):
     final_dir = course_dir / item["title"]
     final_md = final_dir / f"{item['title']}_转写.md"
     refined_md = final_dir / f"{item['title']}_精炼.md"
-    if final_md.exists() and (not args.refine or refined_md.exists()):
+    if final_exists(item, course_dir, args.refine):
         print(f"skip existing final: {item['title']}", flush=True)
         return
 
@@ -382,6 +389,10 @@ def main():
     for idx, item in enumerate(items, 1):
         print(f"\n[{idx}/{manifest['count']}] {item['title']}", flush=True)
         try:
+            if final_exists(item, course_dir, args.refine):
+                print(f"skip existing final: {item['title']}", flush=True)
+                continue
+
             if args.prefer_direct:
                 url = direct_url(item, args.room)
             else:
